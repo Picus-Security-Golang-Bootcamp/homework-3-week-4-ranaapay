@@ -15,7 +15,7 @@ func NewAuthorRepository(db *gorm.DB) *AuthorRepository {
 	return &AuthorRepository{db: db}
 }
 
-func (a *AuthorRepository) GetById(id int) (*storageType.Author,error) {
+func (a *AuthorRepository) GetById(id int) (*storageType.Author, error) {
 	var author storageType.Author
 	result := a.db.First(&author, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -31,7 +31,7 @@ func (a *AuthorRepository) FindByName(name string) []storageType.Author {
 	return authors
 }
 
-func (a *AuthorRepository) GetAllAuthorsWithBookInfo() (storageType.Author,error) {
+func (a *AuthorRepository) GetAllAuthorsWithBookInfo() (storageType.Author, error) {
 	var authors []storageType.Author
 	result := a.db.Preload("books").Find(&authors)
 	if result.Error != nil {
@@ -47,7 +47,8 @@ func (a *AuthorRepository) InsertSampleData() error {
 		return err
 	}
 	for _, author := range authors {
-		a.db.Create(&author)
+		a.db.Where(storageType.Author{Name: author.Name, LastName: author.LastName}).
+			Create(&author)
 	}
 	return nil
 }

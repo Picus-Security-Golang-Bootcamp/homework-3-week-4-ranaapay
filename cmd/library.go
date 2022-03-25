@@ -18,16 +18,19 @@ func Execute() {
 		log.Fatal("Postgres cannot init ", err)
 	}
 	log.Println("Postgres connected")
+
 	bookRepo := storage.NewBookRepository(db)
 	bookRepo.Migrations()
-	if err  = bookRepo.InsertSampleData(); err != nil {
+	if err = bookRepo.InsertSampleData(); err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println(bookRepo.GetById(12))
 
 	authorRepo := storage.NewAuthorRepository(db)
 	authorRepo.Migrations()
-	if err  = bookRepo.InsertSampleData(); err != nil {
+	if err = authorRepo.InsertSampleData(); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(authorRepo.GetAllAuthorsWithBookInfo())
+	fmt.Println(authorRepo.GetById(10))
+	//fmt.Println(authorRepo.GetAllAuthorsWithBookInfo())
 }
