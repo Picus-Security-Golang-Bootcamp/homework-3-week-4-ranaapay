@@ -31,6 +31,12 @@ func (a *AuthorRepository) FindByName(name string) []storageType.Author {
 	return authors
 }
 
+func (a *AuthorRepository) GetAuthorByIdWithBookInfos(id int) []storageType.Author {
+	var authors []storageType.Author
+	a.db.Raw("select * from books b right join authors a on b.author_id = a.id where b.author_id = ?", id).Scan(&authors)
+	return authors
+}
+
 func (a *AuthorRepository) GetAllAuthorsWithBookInfo() (storageType.Author, error) {
 	var authors []storageType.Author
 	result := a.db.Preload("books").Find(&authors)
