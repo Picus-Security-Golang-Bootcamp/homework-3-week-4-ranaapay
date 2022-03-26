@@ -5,6 +5,7 @@ import (
 	"PicusHomework3/src/storage"
 	"fmt"
 	"github.com/joho/godotenv"
+	"gorm.io/gorm"
 	"log"
 )
 
@@ -19,18 +20,34 @@ func Execute() {
 	}
 	log.Println("Postgres connected")
 
+	BookRepoFunc(db)
+	AuthorRepoFunc(db)
+}
+
+//BookRepoFunc BookRepo functions are called. return types are ignored.
+func BookRepoFunc(db *gorm.DB) {
 	bookRepo := storage.NewBookRepository(db)
 	bookRepo.Migrations()
-	if err = bookRepo.InsertSampleData(); err != nil {
+	if err := bookRepo.InsertSampleData(); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(bookRepo.GetById(12))
+	bookRepo.GetById(12)
+	bookRepo.BuyBookByItsId(1, 2)
+	bookRepo.GetAllBooks()
+	bookRepo.FindBookByItsStockCode("abc")
+	bookRepo.FindByName("asdf")
+	bookRepo.FindBooksWithLimitOffset(5, 5)
+}
 
+//AuthorRepoFunc AuthorRepo functions are called. return types are ignored.
+func AuthorRepoFunc(db *gorm.DB) {
 	authorRepo := storage.NewAuthorRepository(db)
 	authorRepo.Migrations()
-	if err = authorRepo.InsertSampleData(); err != nil {
+	fmt.Println(authorRepo.GetAuthorByIdWithBookInfos(5))
+	if err := authorRepo.InsertSampleData(); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(authorRepo.GetById(10))
-	//fmt.Println(authorRepo.GetAllAuthorsWithBookInfo())
+	authorRepo.GetById(10)
+	authorRepo.GetAllAuthorsWithBookInfo()
+	authorRepo.GetAuthorByIdWithBookInfos(3)
 }
